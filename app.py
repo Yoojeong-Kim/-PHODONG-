@@ -68,6 +68,12 @@ def inject_css():
         .polaroid-label { text-align: center; margin-top: 15px; font-family: 'Jua'; color: #BBB; }
         .dialogue-box { background: #FFFBE6; border: 2px solid #FFF5C4; border-radius: 20px 20px 20px 0; padding: 25px; margin-bottom: 20px; font-family: 'Jua'; font-size: 1.3rem; color: #5D4037; }
         .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    
+        /* === HIDE STREAMLIT BRANDING === */
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        .stDeployButton {display:none;}
     </style>
     """, unsafe_allow_html=True)
 
