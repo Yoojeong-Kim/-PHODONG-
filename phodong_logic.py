@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger("PhodongCore")
 
 # 상수
-DEFAULT_MODEL = "gemini-2.0-flash" # 최신 모델 권장
+DEFAULT_MODEL = "gemini-1.5-flash" # 최신 모델 권장
 GENRE_OPTIONS = [
     "전래동화", "판타지", "히어로", "요정",
     "일상", "자동차", "공주/왕자", "추리",
@@ -182,4 +182,3 @@ class AudioService:
             fp.seek(0)
             return fp.read()
         except: return None
-        
