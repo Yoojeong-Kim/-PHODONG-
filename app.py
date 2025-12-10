@@ -27,7 +27,7 @@ def inject_css():
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap');
         
-        :root { --bg-base: #FFFBF8; --primary: #FF9EAA; --secondary: #FFD580; --tertiary: #A0C4FF; --primary-soft: #FFF0F5; }
+        :root { --bg-base: #FFFBF8; --primary: #FF9EAA; --secondary: #FFD580; --tertiary: #A0C4FF; }
         
         /* 전체 배경 및 폰트 */
         .stApp { background: linear-gradient(135deg, #FFFBF8 0%, #FFF5F7 50%, #F0F7FF 100%); font-family: 'Gowun Dodum', sans-serif; }
@@ -36,46 +36,43 @@ def inject_css():
         /* 상단 여백 제거 */
         .block-container { padding-top: 2rem !important; }
 
-        /* ================= 랜딩 페이지 카드 버튼 스타일 (핵심!) ================= */
-        .card-container {
-            text-align: center;
-            padding: 40px 30px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 3px solid transparent;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-        
-        /* Streamlit 버튼 투명화 및 카드 덮어씌우기 */
-        [data-testid="stButton"] > button[key^="btn_landing"] {
-            background-color: transparent !important;
-            border: none !important;
-            padding: 0 !important;
-            height: auto !important;
+        /* ================= [수정됨] 랜딩 페이지 카드 버튼 스타일 ================= */
+        /* 키가 'btn_landing'으로 시작하는 버튼을 하얀색 카드처럼 꾸미기 */
+        div[data-testid="stButton"] button[key^="btn_landing"] {
+            background-color: white !important;
+            border: 2px solid white !important;
+            border-radius: 20px !important;
+            height: 280px !important;  /* 카드 높이 */
             width: 100% !important;
-            box-shadow: none !important;
-            color: inherit !important;
-            font-family: inherit !important;
-            font-size: inherit !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+            
+            /* 텍스트 정렬 및 줄바꿈 허용 */
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            white-space: pre-wrap !important; /* 줄바꿈(\n) 적용 필수 */
+            
+            /* 폰트 스타일 */
+            color: #4A4A4A !important;
+            font-family: 'Jua' !important;
+            font-size: 1.3rem !important;
+            line-height: 1.5 !important;
+            transition: all 0.3s ease !important;
         }
 
-        /* 호버 효과 */
-        [data-testid="stButton"]:hover > button[key^="btn_landing"] .card-container {
-            transform: translateY(-7px);
-            box-shadow: 0 15px 35px rgba(255, 158, 170, 0.2);
-            border-color: var(--primary);
-            background-color: var(--primary-soft);
+        /* 마우스 올렸을 때 효과 */
+        div[data-testid="stButton"] button[key^="btn_landing"]:hover {
+            transform: translateY(-7px) !important;
+            box-shadow: 0 15px 35px rgba(255, 158, 170, 0.2) !important;
+            border-color: var(--primary) !important;
+            background-color: #FFF0F5 !important; /* 연한 핑크 배경 */
+            color: #FF9EAA !important;
         }
         /* ===================================================================== */
 
-        /* 기본 버튼 스타일 */
-        .stButton>button:not([key^="btn_landing"]) { 
+        /* 일반 버튼 스타일 (랜딩 페이지 버튼 제외) */
+        div[data-testid="stButton"] button:not([key^="btn_landing"]) { 
             border-radius: 12px !important; 
             background: linear-gradient(45deg, var(--primary), #FF8495) !important; 
             color: white !important; 
@@ -85,47 +82,30 @@ def inject_css():
             font-size: 1.2rem !important; 
             width: 100% !important; 
             box-shadow: 0 4px 15px rgba(255, 158, 170, 0.3) !important;
-            transition: all 0.2s ease-in-out !important;
-        }
-        .stButton>button:not([key^="btn_landing"]):hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 8px 20px rgba(255, 158, 170, 0.5) !important; 
-        }
-
-        /* 2차 버튼 */
-        button[kind="secondary"] {
-            background: white !important;
-            color: #555 !important;
-            border: 2px solid #EEE !important;
-        }
-
-        /* 폴라로이드 & 대사창 */
-        .polaroid-frame { 
-            background: white; padding: 15px 15px 50px 15px; 
-            border: 1px solid #EEE; box-shadow: 0 8px 20px rgba(0,0,0,0.05); 
-            border-radius: 8px; transform: rotate(-1deg);
-        }
-        .polaroid-img { width: 100%; border-radius: 2px; border: 1px solid #F0F0F0; }
-        .polaroid-label { text-align: center; margin-top: 15px; font-family: 'Jua'; color: #BBB; font-size: 1.1rem; }
-
-        .dialogue-box { 
-            background: #FFFBE6; border: 2px solid #FFF5C4; 
-            border-radius: 20px 20px 20px 0; padding: 30px; 
-            margin-bottom: 20px; font-family: 'Jua'; font-size: 1.4rem; color: #5D4037; 
-            line-height: 1.6; box-shadow: 0 4px 10px rgba(255, 235, 59, 0.1);
         }
         
-        .loader-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(255, 255, 255, 0.95); z-index: 9999; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-        }
+        /* 폴라로이드 & 대사창 스타일 */
+        .polaroid-frame { background: white; padding: 15px 15px 50px 15px; border: 1px solid #EEE; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border-radius: 4px; }
+        .polaroid-img { width: 100%; border-radius: 2px; border: 1px solid #F0F0F0; }
+        .dialogue-box { background: #FFFBE6; border: 2px solid #FFF5C4; border-radius: 20px 20px 20px 0; padding: 30px; margin-bottom: 20px; font-family: 'Jua'; font-size: 1.4rem; color: #5D4037; }
+        .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
-        /* UI 숨기기 */
-        div[data-testid="stToolbar"], div[data-testid="stDecoration"], div[data-testid="stStatusWidget"], #MainMenu, header, footer {
-            visibility: hidden; height: 0%; position: fixed;
+        /* 🔥 [수정됨] UI 숨기기 (빨간 뱃지 & 프로필 완벽 제거) 🔥 */
+        div[data-testid="stToolbar"], 
+        div[data-testid="stDecoration"], 
+        div[data-testid="stStatusWidget"], 
+        #MainMenu, header, footer {
+            visibility: hidden !important; 
+            height: 0% !important; 
+            display: none !important;
         }
-        .viewerBadge_container__1QSob, [class*="viewerBadge"] { display: none !important; }
+        
+        /* 뱃지 타겟팅 강화 */
+        .viewerBadge_container__1QSob, 
+        [class*="viewerBadge"], 
+        [data-testid="stHeader"] { 
+            display: none !important; 
+        }
     </style>
     """, unsafe_allow_html=True)
 
@@ -145,37 +125,28 @@ class AppState:
 # UI PAGES
 # ==============================================================================
 def landing_page():
+    # 상단 여백 및 타이틀
     st.markdown("<div style='height: 8vh;'></div>", unsafe_allow_html=True)
     st.markdown("<h1 style='text-align:center; font-size:4.5rem; color:#FF9EAA; text-shadow: 3px 3px 0 #FFF; margin-bottom: 10px;'>🧸 포동 PHODONG</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align:center; color:#888; font-size:1.3rem; margin-bottom:70px; font-weight: 500;'>우리 아이를 위한 세상에 하나뿐인 AI 동화책</p>", unsafe_allow_html=True)
     
+    # 카드형 버튼 레이아웃
     c1, c2, c3 = st.columns([1, 2.2, 1])
     with c2:
         col_up, col_cam = st.columns(2, gap="large")
         
+        # [수정됨] HTML 코드 제거 -> 줄바꿈(\n)을 이용한 텍스트로 변경
+        # 이모지와 텍스트 사이 엔터를 많이 쳐서 간격을 줍니다.
         with col_up:
-            btn_html_up = """
-            <div class="card-container">
-                <div style="font-size:5rem; margin-bottom:20px;">📂</div>
-                <h3 style="margin:0; color:#4A4A4A; font-size: 1.8rem;">앨범 업로드</h3>
-                <p style="color:#AAA; font-size:1rem; margin-top: 10px;">찍어둔 사진으로 만들어요</p>
-            </div>
-            """
-            if st.button(btn_html_up, key="btn_landing_up"):
+            if st.button("📂\n\n\n앨범 업로드\n\n찍어둔 사진으로 만들어요", key="btn_landing_up"):
                 st.session_state.mode = "upload"; st.rerun()
 
         with col_cam:
-            btn_html_cam = """
-            <div class="card-container">
-                <div style="font-size:5rem; margin-bottom:20px;">📸</div>
-                <h3 style="margin:0; color:#4A4A4A; font-size: 1.8rem;">카메라 촬영</h3>
-                <p style="color:#AAA; font-size:1rem; margin-top: 10px;">지금 바로 찍어서 만들어요</p>
-            </div>
-            """
-            if st.button(btn_html_cam, key="btn_landing_cam"):
+            if st.button("📸\n\n\n카메라 촬영\n\n지금 바로 찍어서 만들어요", key="btn_landing_cam"):
                 st.session_state.mode = "camera"; st.rerun()
-
+                
 def render_config():
+    # 상단 내비게이션 바
     col_nav1, col_nav2 = st.columns([1, 5])
     with col_nav1:
         if st.button("🏠 처음으로"):
@@ -183,8 +154,7 @@ def render_config():
             st.session_state.camera_captures = []
             st.rerun()
             
-    # 👇 [수정됨] 문구 변경: "아이의 이야기 설정" -> "어떤 이야기를 만들어볼까요?"
-    st.markdown(f"### ⚙️ 어떤 이야기를 만들어볼까요?")
+    st.markdown(f"### ⚙️ {st.session_state.story_config.child_name or '아이'}의 이야기 설정")
     
     with st.container(border=True):
         c1, c2 = st.columns(2)
@@ -208,9 +178,9 @@ def process_images(files):
     with ph.container():
         st.markdown("""
         <div class='loader-overlay'>
-            <div style='font-size:4rem; margin-bottom: 20px;'>🔮</div>
-            <h2 style='color:#FF9EAA; font-family:"Jua"; font-size: 2.5rem;'>포동이가 사진을 읽고 있어요...</h2>
-            <p style='color:#AAA; font-size: 1.2rem; margin-top: 10px;'>잠시만 기다려주세요! (약 30초~1분)</p>
+            <div style='font-size:4rem;'>🔮</div>
+            <h2 style='color:#FF9EAA; font-family:"Jua";'>포동이가 사진을 읽고 있어요...</h2>
+            <p style='color:#AAA;'>잠시만 기다려주세요!</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -241,6 +211,7 @@ def scene_view():
     card = cards[idx]
     b64 = Utils.get_image_base64(st.session_state.image_storage.get(card.image_key))
     
+    # 상단 진행바
     st.progress((idx + 1) / len(cards))
     st.markdown(f"<div style='text-align:right; color:#AAA; font-size:0.9rem;'>Page {idx+1} / {len(cards)}</div>", unsafe_allow_html=True)
     
