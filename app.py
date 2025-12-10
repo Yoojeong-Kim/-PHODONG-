@@ -3,7 +3,7 @@ import io
 import streamlit as st
 from PIL import Image
 
-# 로직 임포트
+# 👇 [변경된 부분] 파일 이름 변경에 따른 import 수정
 from phodong_upload import (
     StoryConfig, StoryCard, LLMService, AudioService, Utils,
     GENRE_OPTIONS, PURPOSE_OPTIONS
@@ -25,165 +25,78 @@ def get_api_key():
 def inject_css():
     st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap');
-        
+        @import url('[https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap](https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap)');
         :root { --bg-base: #FFFBF8; --primary: #FF9EAA; --secondary: #FFD580; --tertiary: #A0C4FF; }
-        
-        /* 전체 배경 및 폰트 */
         .stApp { background: linear-gradient(135deg, #FFFBF8 0%, #FFF5F7 50%, #F0F7FF 100%); font-family: 'Gowun Dodum', sans-serif; }
-        h1, h2, h3, h4 { font-family: 'Jua', sans-serif; color: #3A3A3A; }
-        
-        /* 상단 여백 제거 */
-        .block-container { padding-top: 2rem !important; }
-
-        /* ================= [수정됨] 랜딩 페이지 카드 버튼 스타일 ================= */
-        /* 키가 'btn_landing'으로 시작하는 버튼을 하얀색 카드처럼 꾸미기 */
-        div[data-testid="stButton"] button[key^="btn_landing"] {
-            background-color: white !important;
-            border: 2px solid white !important;
-            border-radius: 20px !important;
-            height: 280px !important;  /* 카드 높이 */
-            width: 100% !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
-            
-            /* 텍스트 정렬 및 줄바꿈 허용 */
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: center !important;
-            white-space: pre-wrap !important; /* 줄바꿈(\n) 적용 필수 */
-            
-            /* 폰트 스타일 */
-            color: #4A4A4A !important;
-            font-family: 'Jua' !important;
-            font-size: 1.3rem !important;
-            line-height: 1.5 !important;
-            transition: all 0.3s ease !important;
-        }
-
-        /* 마우스 올렸을 때 효과 */
-        div[data-testid="stButton"] button[key^="btn_landing"]:hover {
-            transform: translateY(-7px) !important;
-            box-shadow: 0 15px 35px rgba(255, 158, 170, 0.2) !important;
-            border-color: var(--primary) !important;
-            background-color: #FFF0F5 !important; /* 연한 핑크 배경 */
-            color: #FF9EAA !important;
-        }
-        /* ===================================================================== */
-
-        /* 일반 버튼 스타일 (랜딩 페이지 버튼 제외) */
-        div[data-testid="stButton"] button:not([key^="btn_landing"]) { 
-            border-radius: 12px !important; 
-            background: linear-gradient(45deg, var(--primary), #FF8495) !important; 
-            color: white !important; 
-            font-family: 'Jua' !important; 
-            border: none !important; 
-            height: 54px !important; 
-            font-size: 1.2rem !important; 
-            width: 100% !important; 
-            box-shadow: 0 4px 15px rgba(255, 158, 170, 0.3) !important;
-        }
-        
-        /* 폴라로이드 & 대사창 스타일 */
+        h1, h2, h3 { font-family: 'Jua', sans-serif; color: #3A3A3A; }
+        .stButton>button { border-radius: 12px; background: linear-gradient(45deg, var(--primary), #FF8495); color: white; font-family: 'Jua'; border: none; height: 50px; font-size: 1.2rem; }
         .polaroid-frame { background: white; padding: 15px 15px 50px 15px; border: 1px solid #EEE; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border-radius: 4px; }
         .polaroid-img { width: 100%; border-radius: 2px; border: 1px solid #F0F0F0; }
-        .dialogue-box { background: #FFFBE6; border: 2px solid #FFF5C4; border-radius: 20px 20px 20px 0; padding: 30px; margin-bottom: 20px; font-family: 'Jua'; font-size: 1.4rem; color: #5D4037; }
-        .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .polaroid-label { text-align: center; margin-top: 15px; font-family: 'Jua'; color: #BBB; }
+        .dialogue-box { background: #FFFBE6; border: 2px solid #FFF5C4; border-radius: 20px 20px 20px 0; padding: 25px; margin-bottom: 20px; font-family: 'Jua'; font-size: 1.3rem; color: #5D4037; }
+        .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
-        /* 🔥 [수정됨] UI 숨기기 (빨간 뱃지 & 프로필 완벽 제거) 🔥 */
-        div[data-testid="stToolbar"], 
-        div[data-testid="stDecoration"], 
-        div[data-testid="stStatusWidget"], 
-        #MainMenu, header, footer {
-            visibility: hidden !important; 
-            height: 0% !important; 
-            display: none !important;
+        /* 🔥 Streamlit UI 숨기기 (완벽 버전) 🔥 */
+        div[data-testid="stToolbar"], div[data-testid="stDecoration"], div[data-testid="stStatusWidget"], #MainMenu, header, footer {
+            visibility: hidden; height: 0%; position: fixed;
         }
-        
-        /* 뱃지 타겟팅 강화 */
-        .viewerBadge_container__1QSob, 
-        [class*="viewerBadge"], 
-        [data-testid="stHeader"] { 
-            display: none !important; 
-        }
+        .viewerBadge_container__1QSob, [class*="viewerBadge"] { display: none !important; }
     </style>
     """, unsafe_allow_html=True)
 
 class AppState:
     @staticmethod
     def init():
-        keys = {
-            "mode": None, "page_idx": 0, "show_final": False, 
-            "story_cards": [], "final_story_text": None, "final_audio_data": None,
-            "generation_complete": False, "image_storage": {}
-        }
-        for k, v in keys.items():
-            if k not in st.session_state: st.session_state[k] = v
+        if "mode" not in st.session_state: st.session_state.mode = None 
+        if "page_idx" not in st.session_state: st.session_state.page_idx = 0
+        if "show_final" not in st.session_state: st.session_state.show_final = False
         if "story_config" not in st.session_state: st.session_state.story_config = StoryConfig()
+        if "story_cards" not in st.session_state: st.session_state.story_cards = []
+        if "final_story_text" not in st.session_state: st.session_state.final_story_text = None
+        if "final_audio_data" not in st.session_state: st.session_state.final_audio_data = None
+        if "generation_complete" not in st.session_state: st.session_state.generation_complete = False
+        if "image_storage" not in st.session_state: st.session_state.image_storage = {}
 
 # ==============================================================================
 # UI PAGES
 # ==============================================================================
 def landing_page():
-    # 상단 여백 및 타이틀
-    st.markdown("<div style='height: 8vh;'></div>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align:center; font-size:4.5rem; color:#FF9EAA; text-shadow: 3px 3px 0 #FFF; margin-bottom: 10px;'>🧸 포동 PHODONG</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; color:#888; font-size:1.3rem; margin-bottom:70px; font-weight: 500;'>우리 아이를 위한 세상에 하나뿐인 AI 동화책</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center; font-size:3rem; color:#FF9EAA;'>🧸 포동 PHODONG</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; color:#888; margin-bottom:50px;'>아이를 위한 맞춤형 동화책을 만들어보세요</p>", unsafe_allow_html=True)
     
-    # 카드형 버튼 레이아웃
-    c1, c2, c3 = st.columns([1, 2.2, 1])
+    c1, c2, c3 = st.columns([1, 2, 1])
     with c2:
-        col_up, col_cam = st.columns(2, gap="large")
-        
-        # [수정됨] HTML 코드 제거 -> 줄바꿈(\n)을 이용한 텍스트로 변경
-        # 이모지와 텍스트 사이 엔터를 많이 쳐서 간격을 줍니다.
+        col_up, col_cam = st.columns(2, gap="medium")
         with col_up:
-            if st.button("📂\n\n\n앨범 업로드\n\n찍어둔 사진으로 만들어요", key="btn_landing_up"):
+            st.markdown("<div style='text-align:center; font-size:3rem;'>📂</div>", unsafe_allow_html=True)
+            if st.button("앨범 업로드", use_container_width=True):
                 st.session_state.mode = "upload"; st.rerun()
-
         with col_cam:
-            if st.button("📸\n\n\n카메라 촬영\n\n지금 바로 찍어서 만들어요", key="btn_landing_cam"):
+            st.markdown("<div style='text-align:center; font-size:3rem;'>📸</div>", unsafe_allow_html=True)
+            if st.button("카메라 촬영", use_container_width=True):
                 st.session_state.mode = "camera"; st.rerun()
-                
+
 def render_config():
-    # 상단 내비게이션 바
-    col_nav1, col_nav2 = st.columns([1, 5])
-    with col_nav1:
-        if st.button("🏠 처음으로"):
-            st.session_state.mode = None
-            st.session_state.camera_captures = []
-            st.rerun()
-            
-    st.markdown(f"### ⚙️ {st.session_state.story_config.child_name or '아이'}의 이야기 설정")
-    
-    with st.container(border=True):
+    st.markdown(f"### ⚙️ 설정: {st.session_state.story_config.child_name}")
+    with st.expander("설정 수정하기", expanded=True):
         c1, c2 = st.columns(2)
         st.session_state.story_config.child_name = c1.text_input("아이 이름", st.session_state.story_config.child_name)
-        st.session_state.story_config.partner_name = c2.text_input("짝꿍 이름 (친구, 인형 등)", st.session_state.story_config.partner_name)
-        
-        c3, c4, c5 = st.columns([1, 2, 2])
-        st.session_state.story_config.age = c3.text_input("나이", st.session_state.story_config.age)
-        st.session_state.story_config.genre = c4.selectbox("장르", GENRE_OPTIONS)
-        st.session_state.story_config.purpose = c5.selectbox("교육 목적", PURPOSE_OPTIONS)
+        st.session_state.story_config.partner_name = c2.text_input("짝꿍 이름", st.session_state.story_config.partner_name)
+        st.session_state.story_config.age = c1.text_input("나이", st.session_state.story_config.age)
+        st.session_state.story_config.genre = c2.selectbox("장르", GENRE_OPTIONS)
+        st.session_state.story_config.purpose = c1.selectbox("목적", PURPOSE_OPTIONS)
 
 def process_images(files):
     try:
         api_key = get_api_key()
         llm = LLMService(api_key)
     except Exception as e:
-        st.error(f"설정 오류: {e}")
+        st.error(f"API 키 오류: {e}")
         return
 
     ph = st.empty()
     with ph.container():
-        st.markdown("""
-        <div class='loader-overlay'>
-            <div style='font-size:4rem;'>🔮</div>
-            <h2 style='color:#FF9EAA; font-family:"Jua";'>포동이가 사진을 읽고 있어요...</h2>
-            <p style='color:#AAA;'>잠시만 기다려주세요!</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
+        st.markdown("<div class='loader-overlay'><h2>🔮 포동이가 이야기를 짓고 있어요...</h2></div>", unsafe_allow_html=True)
         cards = []
         prog = st.progress(0)
         
@@ -211,67 +124,34 @@ def scene_view():
     card = cards[idx]
     b64 = Utils.get_image_base64(st.session_state.image_storage.get(card.image_key))
     
-    # 상단 진행바
-    st.progress((idx + 1) / len(cards))
-    st.markdown(f"<div style='text-align:right; color:#AAA; font-size:0.9rem;'>Page {idx+1} / {len(cards)}</div>", unsafe_allow_html=True)
-    
-    c1, c2 = st.columns([1, 1], gap="large")
+    st.markdown(f"### Scene {idx+1}")
+    c1, c2 = st.columns(2)
     with c1:
-        st.markdown(f"""
-        <div class='polaroid-frame'>
-            <img src='data:image/jpeg;base64,{b64}' class='polaroid-img'>
-            <div class='polaroid-label'>✨ {card.character_name}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"<div class='polaroid-frame'><img src='data:image/jpeg;base64,{b64}' class='polaroid-img'><div class='polaroid-label'>{card.character_name}</div></div>", unsafe_allow_html=True)
     with c2:
-        st.markdown(f"""
-        <div class='dialogue-box'>
-            "{card.dialogue}"
-        </div>
-        <div style='background:white; padding:20px; border-left:5px solid #A0C4FF; border-radius:0 10px 10px 0; color:#666;'>
-            <strong>📖 상황 설명</strong><br>
-            {card.story_narration}
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("---")
+        st.markdown(f"<div class='dialogue-box'>\"{card.dialogue}\"</div>", unsafe_allow_html=True)
+        st.info(f"상황: {card.story_narration}")
     
     c_prev, c_next = st.columns([1, 4])
-    if idx > 0:
-        if c_prev.button("⬅️ 이전 페이지"): st.session_state.page_idx -= 1; st.rerun()
-    
+    if idx > 0 and c_prev.button("⬅️ 이전"): st.session_state.page_idx -= 1; st.rerun()
     if idx < len(cards)-1: 
-        if c_next.button("다음 페이지 ➡️"): st.session_state.page_idx += 1; st.rerun()
+        if c_next.button("다음 ➡️"): st.session_state.page_idx += 1; st.rerun()
     else:
-        if c_next.button("✨ 동화책 완성하기!", type="primary"): st.session_state.show_final = True; st.rerun()
+        if c_next.button("✨ 완성하기", type="primary"): st.session_state.show_final = True; st.rerun()
 
 def final_view():
     if not st.session_state.final_story_text:
-        with st.spinner("이야기 조각들을 모아 동화책을 만들고 있어요..."):
+        with st.spinner("책 엮는 중..."):
             llm = LLMService(get_api_key())
             text = llm.generate_final_story(st.session_state.story_cards, st.session_state.story_config)
             audio = AudioService.create(text)
             st.session_state.final_story_text = text; st.session_state.final_audio_data = audio; st.rerun()
             
-    st.markdown("<h2 style='text-align:center; color:#FF9EAA; font-size:2.5rem;'>📕 나만의 동화책이 완성되었어요!</h2>", unsafe_allow_html=True)
-    st.markdown("---")
-    
-    c1, c2 = st.columns([1.5, 1], gap="large")
-    with c1:
-        st.markdown(f"""
-        <div style='background:white; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); line-height:2.2; font-size:1.1rem; border:1px solid #EEE;'>
-            {st.session_state.final_story_text.replace(chr(10), '<br>')}
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with c2:
-        st.markdown("### 🎧 들어보기")
-        if st.session_state.final_audio_data: 
-            st.audio(st.session_state.final_audio_data, format="audio/mp3")
-        
-        st.markdown("### 💾 저장하기")
-        if st.button("🏠 처음으로 돌아가기"): 
-            st.session_state.clear(); st.rerun()
+    st.markdown("## 📕 동화책 완성!")
+    c1, c2 = st.columns([1.5, 1])
+    c1.markdown(f"<div style='line-height:2.0;'>{st.session_state.final_story_text}</div>", unsafe_allow_html=True)
+    if st.session_state.final_audio_data: c2.audio(st.session_state.final_audio_data, format="audio/mp3")
+    if c2.button("처음으로"): st.session_state.clear(); st.rerun()
 
 # ==============================================================================
 # MAIN ROUTING
@@ -279,20 +159,22 @@ def final_view():
 def main():
     inject_css()
     AppState.init()
-
+    
     if not st.session_state.generation_complete:
         if st.session_state.mode is None:
             landing_page()
         else:
+            if st.button("🏠 홈으로"): st.session_state.mode = None; st.rerun()
             render_config()
             st.markdown("---")
             
+            # [핵심] 모드에 따른 분기 처리
             if st.session_state.mode == "upload":
-                files = st.file_uploader("사진을 올려주세요 (여러 장 가능)", accept_multiple_files=True)
-                if files:
-                    if st.button("✨ 이야기 만들기 시작!", type="primary"): process_images(files)
+                files = st.file_uploader("사진 업로드", accept_multiple_files=True)
+                if files and st.button("만들기", type="primary"): process_images(files)
                     
             elif st.session_state.mode == "camera":
+                # 👇 변경된 모듈에서 호출
                 captured_images = CameraManager.render_camera_ui()
                 if captured_images:
                     process_images(captured_images)
